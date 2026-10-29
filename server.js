@@ -6,36 +6,92 @@ const path = require('path');
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
-  maxHttpBufferSize: 15 * 1024 * 1024 // Autorise l'envoi de fichiers jusqu'à 15MB
+    maxHttpBufferSize: 15 * 1024 * 1024 // Augmenté à 15 Mo pour supporter l'audio/vidéo
 });
 
-// Dossier public contenant index.html et admin.html
+// Servir les fichiers statiques du dossier public
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Route explicite pour l'admin
+// Route explicite pour l'administration
 app.get('/admin', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'admin.html'));
+    res.sendFile(path.join(__dirname, 'public', 'admin.html'));
 });
 
+let clients = {};
+
 io.on('connection', (socket) => {
-  console.log('Nouvelle connexion établie :', socket.id);
+    const uniqueId = socket.id;
+    const randomPseudo = `Utilisateur_${uniqueId.substring(0, 5)}`;
+    
+    clients[uniqueId] = { 
+        id: uniqueId, 
+        pseudo: randomPseudo,
+        unreadCount: 0,
+        lastMessage: 'A rejoint la discussion'
+    };
 
-  // Lorsqu'un client envoie un message, on l'envoie à tout le monde (notamment l'admin)
-  socket.on('clientMessage', (data) => {
-    io.emit('clientMessage', data);
-  });
+    io.emit('newUserNotification', { pseudo: randomPseudo });
+    io.emit('updateUserList', Object.values(clients));
 
-  // Lorsqu'un admin envoie un message, on l'envoie à tout le monde (notamment le client)
-  socket.on('adminMessage', (data) => {
-    io.emit('privateMessage', data);
-  });
+    socket.on('clientMessage', (data) => {
+        const client = clients[uniqueId];
+        if (client) {
+            client.lastMessage = data.fileType && data.fileType.startsWith('audio/') ? '🎤 Message vocal' : (data.text || '[Média]');
+            client.unreadCount += 1;
 
-  socket.on('disconnect', () => {
-    console.log('Utilisateur déconnecté :', socket.id);
-  });
+            const messageData = {
+                senderId: uniqueId,
+                author: client.pseudo,
+                text: data.text || '',
+                file: data.file || null,
+                fileType: data.fileType || null,
+                time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+            };
+            io.emit('newClientMessage', messageData);
+            io.emit('updateUserList', Object.values(clients));
+        }
+    });
+
+    socket.on('adminReply', (data) => {
+        if (clients[data.targetSocketId]) {
+            clients[data.targetSocketId].lastMessage = data.fileType && data.fileType.startsWith('audio/') ? '👑 Admin: 🎤 Vocal' : `Admin: ${data.text || '[Média]'}`;
+        }
+        const replyData = {
+            author: '👑 Support Admin',
+            text: data.text || '',
+            file: data.file || null,
+            fileType: data.fileType || null,
+            time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        };
+        io.to(data.targetSocketId).emit('privateMessage', replyData);
+        io.emit('adminReplySent', { targetSocketId: data.targetSocketId, ...replyData });
+        io.emit('updateUserList', Object.values(clients));
+    });
+
+    socket.on('markAsRead', (targetSocketId) => {
+        if (clients[targetSocketId]) {
+            clients[targetSocketId].unreadCount = 0;
+            io.emit('updateUserList', Object.values(clients));
+        }
+    });
+
+    socket.on('deleteConversation', (targetSocketId) => {
+        if (clients[targetSocketId]) {
+            delete clients[targetSocketId];
+            io.to(targetSocketId).emit('conversationClosed');
+            io.emit('updateUserList', Object.values(clients));
+        }
+    });
+
+    socket.on('disconnect', () => {
+        if (clients[uniqueId]) {
+            delete clients[uniqueId];
+            io.emit('updateUserList', Object.values(clients));
+        }
+    });
 });
 
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
-  console.log(`Serveur démarré sur le port ${PORT}`);
+    console.log(`Serveur en écoute sur le port ${PORT}`);
 });
