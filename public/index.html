@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Support Client - Chat</title>
+    <title>Administration - Support Chat</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome for Icons -->
@@ -14,18 +14,7 @@
         tailwind.config = {
             theme: {
                 extend: {
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                    },
-                    colors: {
-                        brand: {
-                            50: '#eff6ff',
-                            100: '#dbeafe',
-                            500: '#3b82f6',
-                            600: '#2563eb',
-                            700: '#1d4ed8',
-                        }
-                    }
+                    fontFamily: { sans: ['Inter', 'sans-serif'] }
                 }
             }
         }
@@ -42,81 +31,52 @@
 </head>
 <body class="h-full font-sans antialiased text-slate-800 bg-slate-100 flex flex-col justify-between overflow-hidden">
 
-    <!-- Main Application Viewport -->
-    <main class="w-full h-full flex flex-col justify-between overflow-hidden bg-white max-w-md mx-auto shadow-xl sm:border-x sm:border-slate-200 relative">
+    <!-- Main Admin Viewport -->
+    <main class="w-full h-full flex flex-col justify-between overflow-hidden bg-white max-w-2xl mx-auto shadow-xl sm:border-x sm:border-slate-200 relative">
 
-        <!-- App Body -->
-        <div class="flex-1 flex overflow-hidden relative bg-slate-50">
-
-            <!-- MAIN CHAT AREA -->
-            <section class="flex-1 flex flex-col h-full bg-[#f8fafc] relative min-w-0">
-                
-                <!-- Chat Header Bar -->
-                <div class="bg-white border-b border-slate-200/80 px-3 py-2.5 flex items-center justify-between shadow-xs z-10">
-                    <div class="flex items-center space-x-2 min-w-0">
-                        <div class="flex items-center space-x-2.5 min-w-0">
-                            <div class="relative flex-shrink-0">
-                                <div class="w-9 h-9 rounded-full overflow-hidden bg-blue-600 text-white flex items-center justify-center font-bold text-sm shadow-xs">
-                                    S
-                                </div>
-                            </div>
-                            <div class="truncate">
-                                <h2 class="text-sm font-bold text-slate-900 leading-tight truncate">Support en direct</h2>
-                                <p class="text-[11px] text-emerald-500 font-medium flex items-center gap-1">
-                                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> En ligne
-                                </p>
-                            </div>
-                        </div>
-                    </div>
+        <!-- Header Admin -->
+        <div class="bg-slate-900 text-white px-4 py-3 flex items-center justify-between shadow-md z-10">
+            <div class="flex items-center space-x-3">
+                <div class="w-9 h-9 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-sm">
+                    A
                 </div>
+                <div>
+                    <h2 class="text-sm font-bold leading-tight">Panneau Administrateur - Support</h2>
+                    <p class="text-[11px] text-emerald-400 font-medium flex items-center gap-1">
+                        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> Connecté au serveur
+                    </p>
+                </div>
+            </div>
+        </div>
 
-                <!-- Chat Scrollable Feed -->
-                <div id="messages" class="flex-1 overflow-y-auto p-3.5 space-y-4">
-                    <!-- Date Badge -->
-                    <div class="flex justify-center my-1">
-                        <span class="text-[10px] font-semibold uppercase tracking-wider bg-slate-200/70 text-slate-600 px-3 py-0.5 rounded-full">Aujourd'hui</span>
+        <!-- Corps du Chat Admin -->
+        <div class="flex-1 flex flex-col overflow-hidden relative bg-[#f8fafc]">
+            
+            <!-- Fil de discussion -->
+            <div id="admin-messages" class="flex-1 overflow-y-auto p-4 space-y-4">
+                <div class="flex justify-center my-1">
+                    <span class="text-[10px] font-semibold uppercase tracking-wider bg-slate-200/70 text-slate-600 px-3 py-0.5 rounded-full">Historique des messages</span>
+                </div>
+            </div>
+
+            <!-- Barre d'envoi Admin -->
+            <div class="p-3 bg-white border-t border-slate-200/80">
+                <form id="admin-form" class="flex items-center space-x-2">
+                    <label class="p-2 text-slate-500 hover:text-blue-600 hover:bg-slate-100 rounded-full transition cursor-pointer" title="Envoyer une image ou vidéo">
+                        <i class="fa-solid fa-plus text-sm"></i>
+                        <input type="file" id="admin-file-input" style="display: none;" accept="image/*,video/*,audio/*" />
+                    </label>
+                    
+                    <div class="flex-1 flex items-center bg-slate-100 rounded-full px-3 py-1.5 focus-within:bg-white focus-within:ring-2 focus-within:ring-blue-500/20 focus-within:border-blue-500 border border-transparent transition">
+                        <input id="admin-msg-input" type="text" placeholder="Répondre au client..." class="w-full bg-transparent text-xs text-slate-800 placeholder-slate-400 focus:outline-none" autocomplete="off">
                     </div>
 
-                    <!-- Message d'accueil du support -->
-                    <div class="flex items-end space-x-2 max-w-[88%] sm:max-w-[80%]">
-                        <div class="w-7 h-7 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-xs mb-1 flex-shrink-0 shadow-xs">
-                            S
-                        </div>
-                        <div>
-                            <div class="bg-white p-3 rounded-2xl rounded-bl-xs chat-shadow border border-slate-100 space-y-1">
-                                <p class="text-xs text-slate-800 font-normal leading-relaxed">
-                                    Bonjour ! Comment pouvons-nous vous aider aujourd'hui ? Vous pouvez nous écrire ou partager des médias.
-                                </p>
-                                <div class="flex justify-end text-[10px] text-slate-400 font-medium">
-                                    Maintenant
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                    <button type="submit" class="w-9 h-9 bg-blue-600 hover:bg-blue-700 text-white rounded-full flex items-center justify-center shadow-md transition active:scale-95 flex-shrink-0">
+                        <i class="fa-solid fa-paper-plane text-xs"></i>
+                    </button>
+                </form>
+            </div>
 
-                <!-- Input Footer Bar -->
-                <div class="p-2.5 bg-white border-t border-slate-200/80">
-                    <form id="chat-form" class="flex items-center space-x-1.5">
-                        <label class="p-2 text-slate-500 hover:text-blue-600 hover:bg-slate-100 rounded-full transition cursor-pointer" title="Envoyer une image ou vidéo">
-                            <i class="fa-solid fa-plus text-sm"></i>
-                            <input type="file" id="file-input" style="display: none;" accept="image/*,video/*,audio/*" />
-                        </label>
-                        <button type="button" id="record-btn" class="p-2 text-slate-500 hover:text-blue-600 hover:bg-slate-100 rounded-full transition" title="Message vocal">
-                            <i class="fa-solid fa-microphone text-sm"></i>
-                        </button>
-                        
-                        <div class="flex-1 flex items-center bg-slate-100 rounded-full px-3 py-1.5 focus-within:bg-white focus-within:ring-2 focus-within:ring-blue-500/20 focus-within:border-blue-500 border border-transparent transition">
-                            <input id="msg-input" type="text" placeholder="Écrivez votre message..." class="w-full bg-transparent text-xs text-slate-800 placeholder-slate-400 focus:outline-none" autocomplete="off">
-                        </div>
-
-                        <button type="submit" class="w-9 h-9 bg-blue-600 hover:bg-blue-700 text-white rounded-full flex items-center justify-center shadow-md transition active:scale-95 flex-shrink-0">
-                            <i class="fa-solid fa-paper-plane text-xs"></i>
-                        </button>
-                    </form>
-                </div>
-
-            </section>
         </div>
     </main>
 
@@ -129,15 +89,10 @@
     <script src="/socket.io/socket.io.js"></script>
     <script>
         const socket = io();
-        let mediaRecorder;
-        let audioChunks = [];
-        let isRecording = false;
-
-        const form = document.getElementById('chat-form');
-        const inputMsg = document.getElementById('msg-input');
-        const fileInput = document.getElementById('file-input');
-        const recordBtn = document.getElementById('record-btn');
-        const messagesUl = document.getElementById('messages');
+        const form = document.getElementById('admin-form');
+        const inputMsg = document.getElementById('admin-msg-input');
+        const fileInput = document.getElementById('admin-file-input');
+        const messagesUl = document.getElementById('admin-messages');
         const modal = document.getElementById('media-modal');
         const modalContent = document.getElementById('modal-content-container');
         const closeModal = document.getElementById('close-modal');
@@ -163,40 +118,6 @@
         closeModal.onclick = () => { modal.style.display = 'none'; };
         modal.onclick = (e) => { if (e.target === modal) modal.style.display = 'none'; };
 
-        // Enregistrement vocal
-        recordBtn.onclick = async () => {
-            if (!isRecording) {
-                try {
-                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                    mediaRecorder = new MediaRecorder(stream);
-                    audioChunks = [];
-
-                    mediaRecorder.ondataavailable = event => audioChunks.push(event.data);
-                    mediaRecorder.onstop = () => {
-                        const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
-                        const reader = new FileReader();
-                        reader.readAsDataURL(audioBlob);
-                        reader.onloadend = () => {
-                            const base64Audio = reader.result;
-                            socket.emit('clientMessage', { text: '', file: base64Audio, fileType: 'audio/webm' });
-                            appendMessage('self', '', base64Audio, 'audio/webm');
-                        };
-                        stream.getTracks().forEach(track => track.stop());
-                    };
-
-                    mediaRecorder.start();
-                    isRecording = true;
-                    recordBtn.classList.add('text-red-500', 'animate-pulse');
-                } catch (err) {
-                    alert("Impossible d'accéder au microphone.");
-                }
-            } else {
-                mediaRecorder.stop();
-                isRecording = false;
-                recordBtn.classList.remove('text-red-500', 'animate-pulse');
-            }
-        };
-
         form.addEventListener('submit', (e) => {
             e.preventDefault();
             const text = inputMsg.value.trim();
@@ -207,14 +128,14 @@
                 if (file) {
                     const reader = new FileReader();
                     reader.onload = function(event) {
-                        socket.emit('clientMessage', { text: text, file: event.target.result, fileType: file.type });
-                        appendMessage('self', text, event.target.result, file.type, timeStr);
+                        socket.emit('adminMessage', { text: text, file: event.target.result, fileType: file.type });
+                        appendMessage('admin', text, event.target.result, file.type, timeStr);
                         resetForm();
                     };
                     reader.readAsDataURL(file);
                 } else {
-                    socket.emit('clientMessage', { text: text, file: null, fileType: null });
-                    appendMessage('self', text, null, null, timeStr);
+                    socket.emit('adminMessage', { text: text, file: null, fileType: null });
+                    appendMessage('admin', text, null, null, timeStr);
                     resetForm();
                 }
             }
@@ -227,14 +148,14 @@
 
         function appendMessage(sender, text, file, fileType, time) {
             const timeStr = time || new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-            const isSelf = sender === 'self';
+            const isAdmin = sender === 'admin';
             
             const wrapper = document.createElement('div');
-            wrapper.className = isSelf 
+            wrapper.className = isAdmin 
                 ? "flex items-end justify-end space-x-2 ml-auto max-w-[88%] sm:max-w-[80%]" 
                 : "flex items-end space-x-2 max-w-[88%] sm:max-w-[80%]";
 
-            let contentHtml = `<div class="${isSelf ? "bg-blue-600 text-white p-3 rounded-2xl rounded-br-xs shadow-md space-y-1" : "bg-white p-3 rounded-2xl rounded-bl-xs chat-shadow border border-slate-100 space-y-1"}">`;
+            let contentHtml = `<div class="${isAdmin ? "bg-blue-600 text-white p-3 rounded-2xl rounded-br-xs shadow-md space-y-1" : "bg-white p-3 rounded-2xl rounded-bl-xs chat-shadow border border-slate-100 space-y-1"}">`;
             if (text) {
                 contentHtml += `<p class="text-xs font-normal leading-relaxed">${escapeHtml(text)}</p>`;
             }
@@ -249,13 +170,13 @@
                 }
             }
 
-            let footerClass = isSelf ? "flex justify-end items-center space-x-1 text-[10px] text-blue-100/90 pt-0.5" : "flex justify-end text-[10px] text-slate-400 font-medium pt-0.5";
-            contentHtml += `<div class="${footerClass}"><span>${timeStr}</span>${isSelf ? '<i class="fa-solid fa-check text-[11px] text-blue-200 ml-1"></i>' : ''}</div>`;
+            let footerClass = isAdmin ? "flex justify-end items-center space-x-1 text-[10px] text-blue-100/90 pt-0.5" : "flex justify-end text-[10px] text-slate-400 font-medium pt-0.5";
+            contentHtml += `<div class="${footerClass}"><span>${timeStr}</span>${isAdmin ? '<i class="fa-solid fa-check text-[11px] text-blue-200 ml-1"></i>' : ''}</div>`;
             contentHtml += `</div>`;
 
-            if (!isSelf) {
+            if (!isAdmin) {
                 wrapper.innerHTML = `
-                    <div class="w-7 h-7 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-xs mb-1 flex-shrink-0 shadow-xs">S</div>
+                    <div class="w-7 h-7 rounded-full bg-slate-700 text-white flex items-center justify-center font-bold text-xs mb-1 flex-shrink-0 shadow-xs">C</div>
                     <div>${contentHtml}</div>
                 `;
             } else {
@@ -266,8 +187,9 @@
             messagesUl.scrollTop = messagesUl.scrollHeight;
         }
 
-        socket.on('privateMessage', (data) => {
-            appendMessage('admin', data.text, data.file, data.fileType);
+        // Réception des messages envoyés par les clients
+        socket.on('clientMessage', (data) => {
+            appendMessage('client', data.text, data.file, data.fileType);
         });
 
         function escapeHtml(str) {
