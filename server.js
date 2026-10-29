@@ -18,16 +18,16 @@ app.get('/admin', (req, res) => {
 });
 
 io.on('connection', (socket) => {
-  console.log('Un utilisateur est connecté :', socket.id);
+  console.log('Nouvelle connexion établie :', socket.id);
 
-  // Transmission du message du client vers l'admin
+  // Lorsqu'un client envoie un message, on l'envoie à tout le monde (notamment l'admin)
   socket.on('clientMessage', (data) => {
-    socket.broadcast.emit('clientMessage', data);
+    io.emit('clientMessage', data);
   });
 
-  // Transmission du message de l'admin vers le client
+  // Lorsqu'un admin envoie un message, on l'envoie à tout le monde (notamment le client)
   socket.on('adminMessage', (data) => {
-    socket.broadcast.emit('privateMessage', data);
+    io.emit('privateMessage', data);
   });
 
   socket.on('disconnect', () => {
